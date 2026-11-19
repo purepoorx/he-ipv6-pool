@@ -1,0 +1,19 @@
+name: package-public
+
+# 一次性维护任务：把 GHCR 包改为公开。手动触发，执行完即可删除。
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+jobs:
+  make-public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set GHCR package visibility to public
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method PATCH /user/packages/container/he-ipv6-pool -f visibility=public
+          gh api /user/packages/container/he-ipv6-pool --jq '{name, visibility}'
